@@ -15,13 +15,28 @@ public class dec {
         return hexString;
     }
 
-    static byte[] strxor(byte[] a, byte[] b) {
+    private static int[][] ToDecimal(String[] MSGS) {
+        int arr[][] = new int[MSGS.length][MSGS[10].length() / 2];
+
+        for (int k = 0; k < MSGS.length; k++) {
+            int len = Math.min(MSGS[10].length(), MSGS[k].length());
+            for (int j = 0, i = 0; j < len; j += 2, i++) {
+                arr[k][i] = Integer.parseInt(MSGS[k].substring(j, j + 2), 16);
+            }
+
+        }
+        return arr;
+    }
+
+    static String strxor(String a1, String b1) {
+        byte[] a = DatatypeConverter.parseHexBinary(a1);
+        byte[] b = DatatypeConverter.parseHexBinary(b1);
         int length = Math.min(a.length, b.length);
         byte[] c = new byte[length];
         for (int i = 0; i < length; i++) {
             c[i] = (byte) (a[i] ^ b[i]);
         }
-        return c;
+        return hexToString(toHexa(c));
     }
 
     public static String toHexa(byte[] bytes) {
@@ -52,68 +67,49 @@ public class dec {
                 "0E02387CB5AADA9C42F769A000B4244F8D1601F05733431F3A43D1E1F5E89FD42FD2B375E2DC8D88984569422651C639C60FFDBD814F6B8EA0824452DDEFC42B0D4EBF727D1938E4EFB6CE4662DC92D6EE1BD0E73459D209B59EFA424A06648D78C2132131FB5610A9C4EA2E572B17424D7A514EE430907AA1BA500DBEE5CE2A383D2FAC6E9DF1B894F89EDD4F75D924",
                 "291E3C28A3EFD68807F721A845B536408E1C4CB94A7C0E2A37549FA6E5F593C82986BD27B1CF9A998A083B443C44DA7CD541F7F883427C8EB3985301DDA7D36A084FA93F30183FECADA7D40775938898EA1B9EAA7701945BA7DEA007"
         };
-        byte[] tmp = DatatypeConverter.parseHexBinary(s[10]);
-        char[] predication = new char[s[10].length() / 2];
+
+
+        char []predication = new char[s[10].length() / 2];
+
         for (int i = 0; i < 10; i++) {
-            byte[] c2 = DatatypeConverter.parseHexBinary(s[i]);
-            String t = hexToString(toHexa(strxor(tmp, c2)));
+            StringBuilder t = new StringBuilder(strxor(s[10], s[i]));
             int x = 0;
             for (int j = 0; j < t.length(); j++, x += 2) {
                 if (Character.isAlphabetic(t.charAt(j))) {
-//                    System.out.println(s[i].charAt(x)+""+s[i].charAt(x+1)+"^"+s[10].charAt(x)+""+s[10].charAt(x+1)+" = "+t.charAt(j));
-                    predication[j] = Character.isUpperCase(t.charAt(j)) ? Character.toLowerCase(t.charAt(j)) : Character.toUpperCase(t.charAt(j));
+                    //c1 * c2 = m1=char * m2=space
+                    if (Character.isUpperCase(t.charAt(j))) {
+                        t.setCharAt(j, Character.toLowerCase(t.charAt(j)));
+                    } else {
+                        t.setCharAt(j, Character.toUpperCase(t.charAt(j)));
+                    }
+                    predication[j]= t.charAt(j);
                 }
             }
-//            if (i == 9) System.out.println(Arrays.toString(predication));
         }
-
-        //we should make a guess
-        /*
-        oPut=[T,  , e, t, t, e, c, r, e, t, h, m, e, s, s, a,  , e, m, i, s, o, m, W, h, e, n, g, u, s, i,  , j, t, a, r,
-        s, t, r, e, h, m, r,  , i, p, h, e, r, n, n, e, v, e, r, e,
-        , s, e, s, t, h, e, a, k, e, y, m, m, o, r, e, b, t, h, a,  , o, o, n, c,  , n, m, c, x, f, r, f, r, z, e]
-
-
-
-
-         *   suggestion=T, h , e, , s, e, c, r, e, t, , m, e, s, s, a, g , e, , i, s, , , W, h, e, n, , u, s, i, n , g, , a, , s, t, r, e, a, m, , s , i, p, h, e, r, , n, e, v, e, r, ,
-         *   u, s, e, , t, h, e, , k, e, y, , m, o, r, e, , t, h, a,n , , o, n, c, e , n, m, c, x, f, r, f, r, z, e
-        1E
-        02
-        04
-        1E
-        05
-        02
-        05
-        25
-        1E
-        05
-        19
-         * */
         Scanner in = new Scanner(System.in);
         WordPredictor predictor = new WordPredictor("C:\\Users\\Fimo\\OTP_Attack\\src\\main\\java\\mydictionary.txt");
-        int xx=0;
-        while (true) {
-            for (int i = 0; i < predication.length; i++) {
+        int xx = 0;
+        while(true) {
+            for(int i = 0; i < predication.length; i++) {
                 System.out.print(predication[i] + "");
             }
             System.out.println();
             for (int i = xx; i < predication.length; i++) {
-                System.out.print(predication[i] +"("+ (i+1)+") ");
+                System.out.print(predication[i] + "(" + (i + 1) + ") ");
             }
             System.out.println();
             System.out.println("Choose the index of the predication word  ");
             int l, r;
             l = in.nextInt();
             r = in.nextInt();
-            xx=r;
+            xx = r;
             String w = "";
-            for (int i = l-1; i < r; i++){
-                w+=predication[i];
+            for (int i = l - 1; i < r; i++) {
+                w += predication[i];
             }
-            System.out.println("You Choose "+ w);
+            System.out.println("You Choose " + w);
             List<String> suggestions = predictor.predictWords(w);
-            if(suggestions.size()==0){
+            if (suggestions.size() == 0) {
                 System.out.println("no suggestions Words the word already correct");
             }
             System.out.println("suggestions Words Can Help You");
@@ -122,12 +118,12 @@ public class dec {
             System.out.println("Choose Your Suggestion Word ");
             String word = in.next();
             boolean flg = true;
-            for (int i = l - 1,b=0; i < r; i++,b++) {
+            for (int i = l - 1, b = 0; i < r; i++, b++) {
                 if (i == r - 1) {
                     predication[i + 1] = ' ';
                 }
-                if(i==0){
-                    flg=false;
+                if (i == 0) {
+                    flg = false;
                 }
                 if (i > 0 && flg) {
                     predication[i - 1] = ' ';
@@ -143,19 +139,12 @@ public class dec {
             System.out.println();
             System.out.println("Do You Want To Continue ? 1/0");
             int c = in.nextInt();
-            if(c==0)
+            if (c == 0) {
+                System.out.println("Done Hacking");
                 break;
+            }
         }
         System.out.println(Arrays.toString(predication));
     }
-    //1 3
-    //5 10
-    //12 18
-    //20 21
-    //24 27
-    //29 33
-    //35 35
-    //37 42
-
 
 }

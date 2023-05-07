@@ -34,13 +34,9 @@ public class WordPredictor implements SpellCheckListener {
     @Override
     public void spellingError(SpellCheckEvent event) {
         String misspelledWord = event.getInvalidWord();
-        List possibleSuggestions = this.spellChecker.getSuggestions(misspelledWord, 0);
+        List<String> possibleSuggestions = this.spellChecker.getSuggestions(misspelledWord, 0);
         if (possibleSuggestions != null) {
             this.suggestions.addAll(possibleSuggestions);
         }
     }
-    public List<String> getSuggestions() {
-        return this.suggestions;
-    }
-
 }
