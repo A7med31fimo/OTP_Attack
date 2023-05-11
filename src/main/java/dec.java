@@ -69,7 +69,7 @@ public class dec {
         };
 
 
-        char []predication = new char[s[10].length() / 2];
+        char[] predication = new char[s[10].length() / 2];
 
         for (int i = 0; i < 10; i++) {
             StringBuilder t = new StringBuilder(strxor(s[10], s[i]));
@@ -82,15 +82,29 @@ public class dec {
                     } else {
                         t.setCharAt(j, Character.toUpperCase(t.charAt(j)));
                     }
-                    predication[j]= t.charAt(j);
+                    predication[j] = t.charAt(j);
                 }
             }
         }
         Scanner in = new Scanner(System.in);
-        WordPredictor predictor = new WordPredictor("C:\\Users\\Fimo\\OTP_Attack\\src\\main\\java\\mydictionary.txt");
+        int tru_char=0;
+        String orginal = "The secret message is: When using a stream cipher never use the key more than once (1927273)";
+        for (int i = 0; i < orginal.length() && i < predication.length; i++) {
+            if(orginal.charAt(i)==predication[i]){
+                tru_char++;
+            }
+        }
+        System.out.print("plain Text :");
+        System.out.println(predication);
+        System.out.println("Accurcy = "+(tru_char*100/orginal.length())+" %");
+        WordPredictor predictor = new WordPredictor("src/main/java/mydictionary.txt");
         int xx = 0;
-        while(true) {
-            for(int i = 0; i < predication.length; i++) {
+        System.out.println("**********************************************");
+        System.out.println("You Can Improve Decryption Process by guessing the lost word");
+
+        while (true) {
+            System.out.println("plain Text :");
+            for (int i = 0; i < predication.length; i++) {
                 System.out.print(predication[i] + "");
             }
             System.out.println();
@@ -98,7 +112,7 @@ public class dec {
                 System.out.print(predication[i] + "(" + (i + 1) + ") ");
             }
             System.out.println();
-            System.out.println("Choose the index of the predication word  ");
+            System.out.println("Choose the index of the predication word like that -> 1 3 or 5 9 and so on . . . ");
             int l, r;
             l = in.nextInt();
             r = in.nextInt();
@@ -115,7 +129,7 @@ public class dec {
             System.out.println("suggestions Words Can Help You");
             System.out.println(suggestions);
             System.out.println();
-            System.out.println("Choose Your Suggestion Word ");
+            System.out.println("Choose Your Suggestion Word (pls write the word)");
             String word = in.next();
             boolean flg = true;
             for (int i = l - 1, b = 0; i < r; i++, b++) {
@@ -137,7 +151,7 @@ public class dec {
                 System.out.print(predication[i] + "");
             }
             System.out.println();
-            System.out.println("Do You Want To Continue ? 1/0");
+            System.out.println("Do You Want To Continue ? (1/0)");
             int c = in.nextInt();
             if (c == 0) {
                 System.out.println("Done Hacking");
